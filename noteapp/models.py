@@ -21,11 +21,17 @@ class Note(models.Model):
         return self.title
     ## The following fields are used to track the user who created the note
     def save(self, *args, **kwargs):
+        # Generate a unique slug if it doesn't exist
         if not self.slug:
+            # Generate a slug from the title
             slug_base = slugify(self.title)
+            # Check if the slug already exists
             slug = slug_base
             # Ensure uniqueness
             while Note.objects.filter(slug=slug).exists():
+                # If it exists, append a random string to make it unique
                 slug = f"{slug_base}-{get_random_string(5)}"
+                # or you can use a random string generator
             self.slug = slug
+            # Save the note with the generated slug
         super(Note, self).save(*args, **kwargs)

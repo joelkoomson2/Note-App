@@ -3,4 +3,8 @@ from .models import Note
 # Register your models here.
 
 # Register the Note model with the Django admin site
-admin.site.register(Note)
+
+class NoteAdmin(admin.ModelAdmin):
+    list_display = ["title", "category", "created","updated"]
+
+admin.site.register(Note, NoteAdmin)
