@@ -39,11 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'noteapp',  # Custom app for notes
     'rest_framework', # Django REST framework for API development
+    'corsheaders', # For handling CORS
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Fixed typo here
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,7 +72,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'yt_notes.wsgi.application'
 
+CORS_ALLOWED_ORIGINS = [
+"http://localhost:5173",
+"http://localhost:5173",
 
+]
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
