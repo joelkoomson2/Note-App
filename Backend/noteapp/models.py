@@ -5,8 +5,8 @@ from django.utils.crypto import get_random_string
 class Note(models.Model):
 
     CATEGORY = (
-        ('BUSINESS', 'business'),
-        ('PERSONAL', 'personal'),
+        ('BUSINESS', 'Business'),
+        ('PERSONAL', 'Personal'),
         ('IMPORTANT', 'Important'),
     )
     title = models.CharField(max_length=100) # Title of the note

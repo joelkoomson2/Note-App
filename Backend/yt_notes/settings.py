@@ -43,9 +43,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Fixed typo here
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Fixed typo here
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -73,9 +73,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'yt_notes.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = [
-"http://localhost:5173",
-"http://localhost:5173",
-
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:5175",
+    "http://127.0.0.1:5175",
+    "http://localhost:8008",
+    "http://127.0.0.1:8008",
 ]
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
