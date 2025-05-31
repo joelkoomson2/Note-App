@@ -38,9 +38,11 @@ def note_detail(request, slug):
         # Retrieve the note by its slug
         note = Note.objects.get(slug=slug)
         # Check if the note exists
+      
+    #...
     except Note.DoesNotExist:
-        # If the note does not exist, return a 404 error
-        return Response(status=status.HTPP_404_404_NOT_FOUND)
+     return Response(status=status.HTTP_404_NOT_FOUND)  # Corrected typo
+#...
     
 
     if request.method =='GET':
@@ -54,7 +56,7 @@ def note_detail(request, slug):
         serializer = NoteSerializer(note, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, tatus=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     
     elif request.method == 'DELETE':

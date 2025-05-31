@@ -1,55 +1,103 @@
-import React from "react";
-import {useState, useEffect} from "react"; // Importing useState from React for state management`
-import MainLayout from './layouts/MainLayout'; // Importing the MainLayout component
-import HomePage from './pages/HomePage'; // Importing the HomePage component
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'; // Importing necessary functions from react-router-dom
-import AddNotePage from './pages/AddNotePage'; // Importing the AddNotePage component
-import NoteDetailPage from './pages/NoteDetailPage'; // Importing the NoteDetailPage component
-import EditNotePage from './pages/EditNotePage'; // Importing the EditNotePage component
-import axios from 'axios'; // Importing axios for making HTTP requests
-import {toast} from 'react-toastify'
+import React, { useState, useEffect } from "react";
+import MainLayout from './layouts/MainLayout';
+import HomePage from './pages/HomePage';
+import AddNotePage from './pages/AddNotePage';
+import NoteDetailPage from './pages/NoteDetailPage';
+import EditNotePage from './pages/EditNotePage';
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+
 const App = () => {
+  const [notes, setNotes] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchText, setSearchText] = useState("")
+  const [filterText, setFilterText] = useState("")
 
-  const [notes, setNotes] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const handleFilterText = (val) => {
+    setFilterText(val)
+  };
 
-    useEffect(() => {
-        setIsLoading(true)
-        axios.get("http://127.0.0.1:8008/notes/")      .then(res => {
+ const handleSearchText = (val) => {
+  setSearchText(val); 
+};
+
+  
+  
+
+  
+  
+  const filterdNotes =
+  filterText === "BUSINESS"
+  ? notes.filter((note) => note.category === "BUSINESS") // Use string here
+  : filterText === "PERSONAL" ?  notes.filter((note) => note.category === "PERSONAL")
+  : filterText === "IMPORTANT" ?  notes.filter((note) => note.category === "IMPORTANT")
+  : notes
+
+  useEffect(() => {
+    if(searchText.length < 3) return;
+    axios.get(`http://127.0.0.1:8008/notes-search/?search=${searchText}`)
+    .then(res => {
+      console.log(res.data)
+      setNotes(res.data)
+  })
+  .catch(err => console.log(err.message))
+  }, [searchText])
+
+  useEffect(() => {
+    setIsLoading(true);
+      axios.get("http://127.0.0.1:8008/notes/")
+      .then(res => {
         console.log(res.data);
         setNotes(res.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch(err => {
         console.log(err.message);
-      })
-  }, [])
+        setIsLoading(false);
+      });
+  }, []);
 
   const addNote = (data) => {
-      axios.post("http://127.0.0.1:8008/notes/", data)    .then(res => {
-      toast("A new note has been added");
-      console.log(res.data)
-    })
+    axios.post("http://127.0.0.1:8008/notes/", data)
+      .then(res => {
+        toast("A new note has been added");
+        console.log(res.data);
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
+  };
 
-    .catch(err =>{
-console.log(console.log(err.message))
-    })
+  const updateNote = (data, slug) => {
+    axios.put(`http://127.0.0.1:8008/notes/${slug}/`, data)
+      .then(res => {
+        console.log(res.data);
+        toast.success("Note updated successfully");
+      })
+      .catch(err => console.log(err.message));
+  };
+
+  const deleteNote = (slug) => {
+    axios.delete(`http://127.0.0.1:8008/notes/${slug}/`)
+    .catch(err => console.log(err.message))
   }
 
-  // Creating a router with routes defined using createRoutesFromElements
   const router = createBrowserRouter(
-    // Defining the routes for the application
     createRoutesFromElements(
-      // Defining a route for the root path ("/") that uses MainLayout
-<Route path="/" element={<MainLayout />}>
-  <Route index element={<HomePage notes={notes} loading = {isLoading} />} />
-  <Route path="add-note" element={<AddNotePage addNote={addNote} />} />
-  <Route path="edit-note/:slug" element={<EditNotePage />} />
-  <Route path="notes/:slug" element={<NoteDetailPage />} /> 
-</Route>
+      <Route path="/" element={<MainLayout searchText={searchText}  handleSearchText={handleSearchText}/>}>
+        <Route index element={<HomePage 
+        notes={filterdNotes}
+         loading={isLoading}
+        filterText={filterText} 
+          handleFilterText={handleFilterText}/>} />
+        <Route path="add-note" element={<AddNotePage addNote={addNote} />} />
+        <Route path="edit-note/:slug" element={<EditNotePage updateNote={updateNote} />} />
+        <Route path="notes/:slug" element={<NoteDetailPage deleteNote={deleteNote} />} />
+      </Route>
     )
   );
-  // Returning the RouterProvider component with the created router
+
   return <RouterProvider router={router} />;
 };
 
