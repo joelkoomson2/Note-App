@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import MainLayout from './layouts/MainLayout';
-import HomePage from './pages/HomePage';
-import AddNotePage from './pages/AddNotePage';
-import NoteDetailPage from './pages/NoteDetailPage';
-import EditNotePage from './pages/EditNotePage';
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React from "react";
+import { useState, useEffect } from "react";
+import MainLayout from "./layouts/MainLayout";
+import AddNotePage from "./pages/AddNotePage";
+import EditNotePage from "./pages/EditNotePage";
+import HomePage from "./pages/HomePage";
+import NoteDetailPage from "./pages/NoteDetailPage";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements,} from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+// import { TbError404Off } from "react-icons/tb"
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -35,14 +37,14 @@ const App = () => {
   : notes
 
   useEffect(() => {
-    if(searchText.length < 3) return;
-    axios.get(`http://127.0.0.1:8008/notes-search/?search=${searchText}`)
+        if(searchText.length < 3) return;
+  axios.get(`http://127.0.0.1:8008/notes-search/?search=meeting${searchText}`)
     .then(res => {
-      console.log(res.data)
-      setNotes(res.data)
-  })
-  .catch(err => console.log(err.message))
-  }, [searchText])
+          console.log(res.data)
+          setNotes(res.data)
+        })
+        .catch(err => console.log(err.message))
+      }, [searchText])
 
   useEffect(() => {
     setIsLoading(true);
@@ -85,15 +87,34 @@ const App = () => {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<MainLayout searchText={searchText}  handleSearchText={handleSearchText}/>}>
-        <Route index element={<HomePage 
-        notes={filterdNotes}
-         loading={isLoading}
-        filterText={filterText} 
-          handleFilterText={handleFilterText}/>} />
-        <Route path="add-note" element={<AddNotePage addNote={addNote} />} />
-        <Route path="edit-note/:slug" element={<EditNotePage updateNote={updateNote} />} />
-        <Route path="notes/:slug" element={<NoteDetailPage deleteNote={deleteNote} />} />
+      <Route
+       path="/"
+       element={
+        <MainLayout
+        searchText={searchText}
+        handleSearchText={handleSearchText}  // Corrected prop name
+    />
+  }
+>
+        <Route
+          index
+          element={
+            <HomePage
+              notes={filterdNotes}
+              loading={isLoading}
+              handleFilterText={handleFilterText}
+            />
+          }
+        />
+        <Route path="/add-note" element={<AddNotePage addNote={addNote} />} />
+        <Route
+          path="/edit-note/:slug"
+          element={<EditNotePage updateNote={updateNote} />}
+        />
+        <Route
+          path="/notes/:slug"
+          element={<NoteDetailPage deleteNote={deleteNote} />}
+        />
       </Route>
     )
   );

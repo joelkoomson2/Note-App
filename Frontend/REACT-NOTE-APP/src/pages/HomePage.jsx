@@ -5,8 +5,7 @@ import NoteCardContainer from '../components/NoteCardContainer';
 const HomePage = ({ notes, loading, filterText, handleFilterText }) => {
   return (
     <>
-      <p>Current filter: {filterText}</p> {/* Display the current filter */}
-      <Filter handleFilterText={handleFilterText} />
+      {notes.length < 1 ? <h4 style={{ textAlign: "center", marginTop: "10px"  }}> No Notes found with the search phrase above</h4> : <Filter handleFilterText={handleFilterText} />}
       <NoteCardContainer notes={notes} loading={loading} />
     </>
   );
